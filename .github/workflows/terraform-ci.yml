@@ -38,12 +38,12 @@ jobs:
 
     - name: Terraform Init (Pricing Calculator Module)
       run: |
-        cd modules/pricing-calc
+        cd modules/pricing
         terraform init -backend=false
         
     - name: Terraform Validate (Pricing Calculator Module)
       run: |
-        cd modules/pricing-calc
+        cd modules/pricing
         terraform validate
 
     - name: Terraform Init (Examples)
