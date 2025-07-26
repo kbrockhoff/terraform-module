@@ -30,7 +30,7 @@ resource "aws_iam_role" "github_actions" {
     ]
   })
 
-  tags = merge(vars.tags, {
+  tags = merge(var.tags, {
     Name = "${var.name_prefix}-github-actions"
   })
 }
