@@ -11,11 +11,11 @@ const RandomIDLength = 10
 
 func TestTerraformBasicExample(t *testing.T) {
 	t.Parallel()
-	expectedName := generateTestNamePrefix("basic")
+	expectedName := generateTestNamePrefix("quick")
 
 	terraformOptions := &terraform.Options{
 		// The path to where our Terraform code is located
-		TerraformDir: "../examples/basic",
+		TerraformDir: "../examples/quickstart",
 
 		// Variables to pass to our Terraform code using -var options
 		Vars: map[string]interface{}{
