@@ -66,6 +66,6 @@ func TestEnabledFalse(t *testing.T) {
 
 	// Verify the plan completed without errors and shows expected output changes
 	assert.NotEmpty(t, planOutput)
-	assert.Contains(t, planOutput, "no changes are needed")
+	assert.Contains(t, planOutput, "No changes")
 
 }
