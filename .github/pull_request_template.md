@@ -29,7 +29,6 @@
 
 ## Terraform Version Compatibility
 <!-- Check all versions that have been tested -->
-- [ ] Terraform >= 1.0
 - [ ] Terraform >= 1.5
 - [ ] Latest Terraform version
 
