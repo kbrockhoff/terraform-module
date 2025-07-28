@@ -86,6 +86,10 @@ jobs:
         role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
         role-session-name: terraform-ci-tests
         aws-region: us-east-1
+        audience: sts.amazonaws.com
+        retry-max-attempts: 3
+        output-credentials: true
+        
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
