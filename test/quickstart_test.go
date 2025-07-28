@@ -9,7 +9,7 @@ import (
 
 const RandomIDLength = 10
 
-func TestTerraformBasicExample(t *testing.T) {
+func TestTerraformQuickstartExample(t *testing.T) {
 	t.Parallel()
 	expectedName := generateTestNamePrefix("quick")
 
