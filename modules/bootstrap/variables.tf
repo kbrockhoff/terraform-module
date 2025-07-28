@@ -24,8 +24,8 @@ variable "github_repo" {
   type        = string
 }
 
-variable "github_branch" {
-  description = "GitHub branch name for OIDC trust"
+variable "environment" {
+  description = "Environment name for OIDC trust (e.g., 'development', 'staging', 'production')"
   type        = string
   default     = "*"
 }
@@ -49,5 +49,15 @@ variable "region" {
 
 variable "account_id" {
   description = "AWS account ID"
+  type        = string
+}
+
+variable "s3_backend_bucket" {
+  description = "S3 bucket name for Terraform state backend"
+  type        = string
+}
+
+variable "s3_backend_lock_table" {
+  description = "DynamoDB table name for Terraform state locking"
   type        = string
 }

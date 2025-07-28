@@ -23,7 +23,7 @@ resource "aws_iam_role" "github_actions" {
             "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
           }
           StringLike = {
-            "token.actions.githubusercontent.com:sub" = "repo:${var.github_org}/${var.github_repo}:ref:refs/heads/${var.github_branch}"
+            "token.actions.githubusercontent.com:sub" = "repo:${var.github_org}/${var.github_repo}:environment:${var.environment}"
           }
         }
       }
@@ -33,4 +33,74 @@ resource "aws_iam_role" "github_actions" {
   tags = merge(var.tags, {
     Name = "${var.name_prefix}-github-actions"
   })
+}
+
+# IAM Policy Document for S3 Backend and Basic Terraform Operations
+data "aws_iam_policy_document" "github_actions" {
+  count = var.enabled ? 1 : 0
+
+  # S3 Backend Operations
+  statement {
+    sid    = "TerraformStateS3Access"
+    effect = "Allow"
+    actions = [
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:DeleteObject",
+      "s3:ListBucket",
+      "s3:GetBucketVersioning",
+      "s3:GetBucketLocation",
+    ]
+    resources = [
+      "arn:${var.partition}:s3:::${var.s3_backend_bucket}",
+      "arn:${var.partition}:s3:::${var.s3_backend_bucket}/*"
+    ]
+  }
+
+  # DynamoDB State Locking
+  statement {
+    sid    = "TerraformStateLocking"
+    effect = "Allow"
+    actions = [
+      "dynamodb:GetItem",
+      "dynamodb:PutItem",
+      "dynamodb:DeleteItem",
+      "dynamodb:DescribeTable",
+    ]
+    resources = [
+      "arn:${var.partition}:dynamodb:${var.region}:${var.account_id}:table/${var.s3_backend_lock_table}"
+    ]
+  }
+
+  # Basic AWS API access for resource management
+  statement {
+    sid    = "BasicAWSAccess"
+    effect = "Allow"
+    actions = [
+      "sts:AssumeRoleWithWebIdentity",
+      "sts:GetCallerIdentity",
+    ]
+    resources = ["*"]
+  }
+
+  # Pricing API access (required for cost estimation)
+  statement {
+    sid    = "PricingAPIAccess"
+    effect = "Allow"
+    actions = [
+      "freetier:GetAccountPlanState",
+      "pricing:GetAttributeValues",
+      "pricing:GetProducts",
+    ]
+    resources = ["*"]
+  }
+
+}
+
+# IAM Policy Resource
+resource "aws_iam_role_policy" "github_actions" {
+  count  = var.enabled ? 1 : 0
+  name   = "${var.name_prefix}-github-actions-policy"
+  role   = aws_iam_role.github_actions[0].id
+  policy = data.aws_iam_policy_document.github_actions[0].json
 }
