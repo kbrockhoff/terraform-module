@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   terraform-checks:
     name: Terraform Format and Validate
@@ -26,26 +30,23 @@ jobs:
     # Root module validation skipped - requires provider configuration
     # Root module is designed to be used as a module with providers passed in
 
-    - name: Terraform Init (Bootstrap Module)
+    - name: Terraform Init (Modules)
       run: |
-        cd modules/bootstrap
-        terraform init -backend=false
+        for module in modules/*/; do
+          echo "Initializing $module"
+          cd "$module"
+          terraform init -backend=false
+          cd - > /dev/null
+        done
         
-    - name: Terraform Validate (Bootstrap Module)
+    - name: Terraform Validate (Modules)
       run: |
-        cd modules/bootstrap
-        terraform validate
-
-    - name: Terraform Init (Pricing Calculator Module)
-      run: |
-        cd modules/pricing
-        terraform init -backend=false
-        
-    - name: Terraform Validate (Pricing Calculator Module)
-      run: |
-        cd modules/pricing
-        terraform validate
-
+        for module in modules/*/; do
+          echo "Validating $module"
+          cd "$module"
+          terraform validate
+          cd - > /dev/null
+        done
     - name: Terraform Init (Examples)
       run: |
         for example in examples/*/; do
@@ -63,3 +64,45 @@ jobs:
           terraform validate
           cd - > /dev/null
         done
+
+  terraform-tests:
+    name: Terraform Tests
+    runs-on: ubuntu-latest
+    environment: development
+    needs: terraform-checks
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.24'
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        role-session-name: terraform-ci-tests
+        aws-region: us-east-1
+        audience: sts.amazonaws.com
+        retry-max-attempts: 3
+        output-credentials: true
+        
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: "1.12.2"
+
+    # Uncomment the following lines to run Terratest
+    # - name: Run Terratest
+    #   env:
+    #     TF_VAR_name_prefix: "ci-test"
+    #     TF_VAR_environment_type: "Development"
+    #     TF_VAR_tags: '{"Environment":"ci","Project":"terraform-module","ManagedBy":"github-actions"}'
+    #   run: |
+    #     cd test
+    #     go mod tidy
+    #     go test -v -timeout 30m

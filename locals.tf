@@ -1,4 +1,6 @@
 locals {
+  module_version = "0.1.0"
+
   # Environment type configuration maps
   environment_defaults = {
     None = {
@@ -47,7 +49,7 @@ locals {
 
   common_tags = merge(var.tags, {
     ModuleName    = "terraform-replace-me"
-    ModuleVersion = "1.0.0"
+    ModuleVersion = local.module_version
     ModuleEnvType = var.environment_type
   })
   common_data_tags = merge(var.data_tags, local.common_tags)
