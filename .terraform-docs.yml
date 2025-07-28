@@ -16,11 +16,7 @@ recursive:
 
 output:
   file: README.md
-  mode: replace
-  template: |-
-    <!-- BEGIN_TF_DOCS -->
-    {{ .Content }}
-    <!-- END_TF_DOCS -->    
+  mode: inject
 
 sort:
   enabled: true
