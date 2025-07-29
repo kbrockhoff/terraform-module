@@ -1,5 +1,5 @@
 output "monthly_cost_estimate" {
-  description = "Total estimated monthly cost in USD for VPC resources"
+  description = "Total estimated monthly cost in USD for module resources"
   value       = local.pricing_enabled ? local.total_monthly_cost : 0
 }
 

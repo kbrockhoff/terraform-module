@@ -8,3 +8,9 @@ variable "region" {
   description = "AWS region"
   type        = string
 }
+
+variable "create_kms_key" {
+  description = "Whether to create a KMS key for encryption"
+  type        = bool
+  default     = false
+}

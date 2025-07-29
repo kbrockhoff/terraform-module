@@ -19,6 +19,6 @@ module "main" {
 
   name_prefix = var.name_prefix
   tags = {
-    Example = "quickstart"
+    Example = "defaults"
   }
 }

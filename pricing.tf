@@ -9,6 +9,7 @@ module "pricing" {
     aws = aws.pricing
   }
 
-  enabled = var.enabled && var.cost_estimation_enabled
-  region  = local.region
+  enabled        = var.enabled && var.cost_estimation_enabled
+  region         = local.region
+  create_kms_key = var.enabled && var.create_kms_key
 }

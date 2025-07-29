@@ -1,35 +1,54 @@
 locals {
-  module_version = "0.1.0"
-
   # Environment type configuration maps
   environment_defaults = {
     None = {
-      rpo_hours = null
-      rto_hours = null
+      rpo_hours                    = null
+      rto_hours                    = null
+      monitoring_enabled           = var.monitoring_enabled
+      alarms_enabled               = var.alarms_enabled
+      kms_key_deletion_window_days = var.kms_key_deletion_window_days
     }
     Ephemeral = {
-      rpo_hours = null
-      rto_hours = 48
+      rpo_hours                    = null
+      rto_hours                    = 48
+      monitoring_enabled           = false
+      alarms_enabled               = false
+      kms_key_deletion_window_days = 7 # Minimal window for ephemeral environments
     }
     Development = {
-      rpo_hours = 24
-      rto_hours = 48
+      rpo_hours                    = 24
+      rto_hours                    = 48
+      monitoring_enabled           = false
+      alarms_enabled               = false
+      kms_key_deletion_window_days = 7 # Short window for development
     }
     Testing = {
-      rpo_hours = 24
-      rto_hours = 48
+      rpo_hours                    = 24
+      rto_hours                    = 48
+      monitoring_enabled           = false
+      alarms_enabled               = false
+      kms_key_deletion_window_days = 14 # Medium window for testing
     }
     UAT = {
-      rpo_hours = 12
-      rto_hours = 24
+      rpo_hours                    = 12
+      rto_hours                    = 24
+      monitoring_enabled           = false
+      alarms_enabled               = false
+      kms_key_deletion_window_days = 14 # Medium window for UAT
     }
     Production = {
-      rpo_hours = 1
-      rto_hours = 4
+      rpo_hours                    = 1
+      rto_hours                    = 4
+      monitoring_enabled           = true
+      alarms_enabled               = true
+      kms_key_deletion_window_days = 30 # Maximum window for production
     }
     MissionCritical = {
-      rpo_hours = 0.083 # 5 minutes
-      rto_hours = 1
+      rpo_hours                    = 0.083 # 5 minutes
+      rto_hours                    = 1
+      monitoring_enabled           = true
+      alarms_enabled               = true
+      kms_key_deletion_window_days = 30 # Maximum window for mission critical
     }
   }
 
@@ -56,5 +75,15 @@ locals {
 
   name_prefix = var.name_prefix
 
+  # KMS key logic - use provided key ID or create new one
+  kms_key_id = var.enabled ? (
+    var.create_kms_key ? aws_kms_key.main[0].arn : var.kms_key_id
+  ) : ""
+
+  # SNS topic logic - use provided topic ARN or create new one
+  create_sns_topic = var.enabled && local.effective_config.alarms_enabled && var.alarm_sns_topic_arn == ""
+  alarm_sns_topic_arn = var.enabled && local.effective_config.alarms_enabled ? (
+    var.alarm_sns_topic_arn != "" ? var.alarm_sns_topic_arn : aws_sns_topic.alarms[0].arn
+  ) : ""
 
 }
