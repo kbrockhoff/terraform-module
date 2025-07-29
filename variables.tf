@@ -61,6 +61,38 @@ variable "networktags_name" {
 }
 
 # ----
+# Encryption
+# ----
+
+variable "create_kms_key" {
+  description = "Set to true to create a customer-managed KMS key for encryption. Set to false to use an existing key specified in kms_key_id."
+  type        = bool
+  default     = true
+}
+
+variable "kms_key_id" {
+  description = "ARN or ID of existing KMS key to use for encryption. Only used when create_kms_key is false."
+  type        = string
+  default     = ""
+
+  validation {
+    condition     = var.create_kms_key || var.kms_key_id != ""
+    error_message = "Either create_kms_key must be true or kms_key_id must be provided."
+  }
+}
+
+variable "kms_key_deletion_window_days" {
+  description = "Number of days to wait before deleting KMS key when destroyed. Only used when create_kms_key is true."
+  type        = number
+  default     = 14
+
+  validation {
+    condition     = var.kms_key_deletion_window_days == null || (var.kms_key_deletion_window_days >= 7 && var.kms_key_deletion_window_days <= 30)
+    error_message = "KMS key deletion window must be between 7 and 30 days when specified."
+  }
+}
+
+# ----
 # Monitoring
 # ----
 
