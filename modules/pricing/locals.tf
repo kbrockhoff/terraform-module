@@ -93,7 +93,12 @@ locals {
   # Get the correct location name for pricing API queries
   pricing_location = lookup(local.region_location_map, var.region, "US East (N. Virginia)")
 
-  kms_monthly = local.pricing_enabled && can(jsondecode(data.aws_pricing_product.kms[0].result).terms.OnDemand) ? values(values(jsondecode(data.aws_pricing_product.kms[0].result).terms.OnDemand)[0].priceDimensions)[0].pricePerUnit.USD : "1.00"
+  kms_on_demand = local.pricing_enabled && can(jsondecode(data.aws_pricing_product.kms[0].result).terms.OnDemand) ? (
+    values(jsondecode(data.aws_pricing_product.kms[0].result).terms.OnDemand)
+  ) : []
+  kms_monthly = length(local.kms_on_demand) > 0 ? (
+    values(local.kms_on_demand[0].priceDimensions)[0].pricePerUnit.USD
+  ) : "1.00"
 
   costs = {
     kms_keys = var.create_kms_key ? tonumber(local.kms_monthly) : 0

@@ -76,8 +76,8 @@ variable "kms_key_id" {
   default     = ""
 
   validation {
-    condition     = var.create_kms_key || var.kms_key_id != ""
-    error_message = "Either create_kms_key must be true or kms_key_id must be provided."
+    condition     = (var.create_kms_key && var.kms_key_id == "") || (!var.create_kms_key && var.kms_key_id != "")
+    error_message = "kms_key_id must be empty when create_kms_key is true, or provided when create_kms_key is false."
   }
 }
 
@@ -87,7 +87,7 @@ variable "kms_key_deletion_window_days" {
   default     = 14
 
   validation {
-    condition     = var.kms_key_deletion_window_days == null || (var.kms_key_deletion_window_days >= 7 && var.kms_key_deletion_window_days <= 30)
+    condition     = var.kms_key_deletion_window_days >= 7 && var.kms_key_deletion_window_days <= 30
     error_message = "KMS key deletion window must be between 7 and 30 days when specified."
   }
 }

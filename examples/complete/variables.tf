@@ -59,3 +59,57 @@ variable "networktags_name" {
     error_message = "Network tags name cannot be null or blank."
   }
 }
+
+# ----
+# Encryption
+# ----
+
+variable "create_kms_key" {
+  description = "Set to true to create a customer-managed KMS key for encryption. Set to false to use an existing key specified in kms_key_id."
+  type        = bool
+  default     = true
+}
+
+variable "kms_key_id" {
+  description = "ARN or ID of existing KMS key to use for encryption. Only used when create_kms_key is false."
+  type        = string
+  default     = ""
+
+  validation {
+    condition     = (var.create_kms_key && var.kms_key_id == "") || (!var.create_kms_key && var.kms_key_id != "")
+    error_message = "kms_key_id must be empty when create_kms_key is true, or provided when create_kms_key is false."
+  }
+}
+
+variable "kms_key_deletion_window_days" {
+  description = "Number of days to wait before deleting KMS key when destroyed. Only used when create_kms_key is true."
+  type        = number
+  default     = 14
+
+  validation {
+    condition     = var.kms_key_deletion_window_days >= 7 && var.kms_key_deletion_window_days <= 30
+    error_message = "KMS key deletion window must be between 7 and 30 days when specified."
+  }
+}
+
+# ----
+# Monitoring
+# ----
+
+variable "monitoring_enabled" {
+  description = "Launched EC2 instance will have detailed monitoring enabled."
+  type        = bool
+  default     = false
+}
+
+variable "alarms_enabled" {
+  description = "Enable CloudWatch alarms for monitoring autoscaling group health"
+  type        = bool
+  default     = false
+}
+
+variable "alarm_sns_topic_arn" {
+  description = "ARN of existing SNS topic to use for alarm notifications. If not provided, a new topic will be created."
+  type        = string
+  default     = ""
+}
