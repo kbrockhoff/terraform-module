@@ -101,7 +101,6 @@ data "aws_iam_policy_document" "basic" {
     sid    = "BasicAWSAccess"
     effect = "Allow"
     actions = [
-      "sts:AssumeRoleWithWebIdentity",
       "sts:GetCallerIdentity",
     ]
     resources = ["*"]
