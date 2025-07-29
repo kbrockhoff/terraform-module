@@ -2,32 +2,46 @@ locals {
   # Environment type configuration maps
   environment_defaults = {
     None = {
-      rpo_hours = null
-      rto_hours = null
+      rpo_hours          = null
+      rto_hours          = null
+      monitoring_enabled = var.monitoring_enabled
+      alarms_enabled     = var.alarms_enabled
     }
     Ephemeral = {
-      rpo_hours = null
-      rto_hours = 48
+      rpo_hours          = null
+      rto_hours          = 48
+      monitoring_enabled = false
+      alarms_enabled     = false
     }
     Development = {
-      rpo_hours = 24
-      rto_hours = 48
+      rpo_hours          = 24
+      rto_hours          = 48
+      monitoring_enabled = false
+      alarms_enabled     = false
     }
     Testing = {
-      rpo_hours = 24
-      rto_hours = 48
+      rpo_hours          = 24
+      rto_hours          = 48
+      monitoring_enabled = false
+      alarms_enabled     = false
     }
     UAT = {
-      rpo_hours = 12
-      rto_hours = 24
+      rpo_hours          = 12
+      rto_hours          = 24
+      monitoring_enabled = false
+      alarms_enabled     = false
     }
     Production = {
-      rpo_hours = 1
-      rto_hours = 4
+      rpo_hours          = 1
+      rto_hours          = 4
+      monitoring_enabled = true
+      alarms_enabled     = true
     }
     MissionCritical = {
-      rpo_hours = 0.083 # 5 minutes
-      rto_hours = 1
+      rpo_hours          = 0.083 # 5 minutes
+      rto_hours          = 1
+      monitoring_enabled = true
+      alarms_enabled     = true
     }
   }
 
@@ -54,5 +68,10 @@ locals {
 
   name_prefix = var.name_prefix
 
+  # SNS topic logic - use provided topic ARN or create new one
+  create_sns_topic = var.enabled && local.effective_config.alarms_enabled && var.alarm_sns_topic_arn == ""
+  alarm_sns_topic_arn = var.enabled && local.effective_config.alarms_enabled ? (
+    var.alarm_sns_topic_arn != "" ? var.alarm_sns_topic_arn : aws_sns_topic.alarms[0].arn
+  ) : ""
 
 }

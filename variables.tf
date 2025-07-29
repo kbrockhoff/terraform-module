@@ -59,3 +59,25 @@ variable "networktags_name" {
     error_message = "Network tags name cannot be null or blank."
   }
 }
+
+# ----
+# Monitoring
+# ----
+
+variable "monitoring_enabled" {
+  description = "Launched EC2 instance will have detailed monitoring enabled."
+  type        = bool
+  default     = false
+}
+
+variable "alarms_enabled" {
+  description = "Enable CloudWatch alarms for monitoring autoscaling group health"
+  type        = bool
+  default     = false
+}
+
+variable "alarm_sns_topic_arn" {
+  description = "ARN of existing SNS topic to use for alarm notifications. If not provided, a new topic will be created."
+  type        = string
+  default     = ""
+}
