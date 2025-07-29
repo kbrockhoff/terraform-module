@@ -36,7 +36,7 @@ resource "aws_iam_role" "github_actions" {
 }
 
 # IAM Policy Document for S3 Backend and Basic Terraform Operations
-data "aws_iam_policy_document" "github_actions" {
+data "aws_iam_policy_document" "basic" {
   count = var.enabled ? 1 : 0
 
   # S3 Backend Operations
@@ -55,6 +55,18 @@ data "aws_iam_policy_document" "github_actions" {
       "arn:${var.partition}:s3:::${var.s3_backend_bucket}",
       "arn:${var.partition}:s3:::${var.s3_backend_bucket}/*"
     ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:PrincipalAccount"
+      values   = [var.account_id]
+    }
+
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+      values   = [true]
+    }
   }
 
   # DynamoDB State Locking
@@ -70,6 +82,18 @@ data "aws_iam_policy_document" "github_actions" {
     resources = [
       "arn:${var.partition}:dynamodb:${var.region}:${var.account_id}:table/${var.s3_backend_lock_table}"
     ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:PrincipalAccount"
+      values   = [var.account_id]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:RequestedRegion"
+      values   = [var.region]
+    }
   }
 
   # Basic AWS API access for resource management
@@ -97,10 +121,21 @@ data "aws_iam_policy_document" "github_actions" {
 
 }
 
-# IAM Policy Resource
-resource "aws_iam_role_policy" "github_actions" {
-  count  = var.enabled ? 1 : 0
-  name   = "${var.name_prefix}-github-actions-policy"
-  role   = aws_iam_role.github_actions[0].id
-  policy = data.aws_iam_policy_document.github_actions[0].json
+# IAM Policy (standalone)
+resource "aws_iam_policy" "basic" {
+  count       = var.enabled ? 1 : 0
+  name        = "${var.name_prefix}-github-actions-basic"
+  description = "Basic permissions for GitHub Actions CI/CD operations"
+  policy      = data.aws_iam_policy_document.basic[0].json
+
+  tags = merge(var.tags, {
+    Name = "${var.name_prefix}-github-actions-basic"
+  })
+}
+
+# IAM Policy Attachment
+resource "aws_iam_role_policy_attachment" "basic" {
+  count      = var.enabled ? 1 : 0
+  role       = aws_iam_role.github_actions[0].name
+  policy_arn = aws_iam_policy.basic[0].arn
 }

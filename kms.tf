@@ -39,6 +39,11 @@ data "aws_iam_policy_document" "kms_key_policy" {
     }
     actions   = ["kms:*"]
     resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:PrincipalAccount"
+      values   = [local.account_id]
+    }
   }
 
   # Allow SNS service to use the key
@@ -57,5 +62,10 @@ data "aws_iam_policy_document" "kms_key_policy" {
       "kms:ReEncrypt*"
     ]
     resources = ["*"]
+    condition {
+      test     = "Bool"
+      variable = "kms:GrantIsForAWSResource"
+      values   = [true]
+    }
   }
 }
