@@ -163,5 +163,3 @@ This eliminates the need to manage different subnet IDs variable values for each
 ## License
 
 This project is licensed under the Apache License, Version 2.0 - see the [LICENSE](LICENSE) file for details.
-
-version = 0.1.0
