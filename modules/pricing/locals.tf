@@ -93,16 +93,10 @@ locals {
   # Get the correct location name for pricing API queries
   pricing_location = lookup(local.region_location_map, var.region, "US East (N. Virginia)")
 
-  # KMS pricing calculation
-  # Try to get pricing from AWS Pricing API, fallback to standard rate
-  kms_cost_per_key_per_month = local.pricing_enabled && var.create_kms_key && length(data.aws_pricing_product.kms) > 0 ? (
-    tonumber(jsondecode(data.aws_pricing_product.kms[0].result).terms.OnDemand[keys(jsondecode(data.aws_pricing_product.kms[0].result).terms.OnDemand)[0]].priceDimensions[keys(jsondecode(data.aws_pricing_product.kms[0].result).terms.OnDemand[keys(jsondecode(data.aws_pricing_product.kms[0].result).terms.OnDemand)[0]].priceDimensions)[0]].pricePerUnit.USD)
-  ) : 1.00 # Fallback to $1.00 per key per month (standard AWS KMS pricing)
+  kms_monthly = local.pricing_enabled && can(jsondecode(data.aws_pricing_product.kms[0].result).terms.OnDemand) ? values(values(jsondecode(data.aws_pricing_product.kms[0].result).terms.OnDemand)[0].priceDimensions)[0].pricePerUnit.USD : "1.00"
 
-  kms_monthly_cost = local.pricing_enabled && var.create_kms_key ? local.kms_cost_per_key_per_month : 0
-
-  total_monthly_cost = local.kms_monthly_cost
   costs = {
-    kms = local.kms_monthly_cost
+    kms_keys = var.create_kms_key ? tonumber(local.kms_monthly) : 0
   }
+  total_monthly_cost = local.costs.kms_keys
 }

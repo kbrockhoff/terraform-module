@@ -8,7 +8,7 @@
 
 output "kms_key_id" {
   description = "ID of the KMS key used for encryption"
-  value       = local.kms_key_id
+  value       = var.enabled && var.create_kms_key ? aws_kms_key.main[0].key_id : ""
 }
 
 output "kms_key_arn" {
