@@ -47,8 +47,3 @@ terraform.rc
 **/*.bak
 claude_desktop_config.json
 
-# START Ruler Generated Files
-.cursor/rules/ruler_cursor_instructions.mdc
-.windsurf/rules/ruler_windsurf_instructions.md
-CLAUDE.md
-# END Ruler Generated Files
