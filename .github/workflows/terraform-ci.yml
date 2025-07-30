@@ -40,7 +40,7 @@ jobs:
                 --output cli \
                 --output sarif \
                 --output-file-path console,checkov-report.sarif \
-                --skip-check CKV_AWS_79,CKV_AWS_144 \
+                --skip-check CKV_AWS_144 \
                 --quiet
       continue-on-error: false
 
@@ -136,12 +136,12 @@ jobs:
         terraform_version: "1.12.2"
 
     # Uncomment the following lines to run Terratest
-    # - name: Run Terratest
-    #   env:
-    #     TF_VAR_name_prefix: "ci-test"
-    #     TF_VAR_environment_type: "Development"
-    #     TF_VAR_tags: '{"Environment":"ci","Project":"terraform-module","ManagedBy":"github-actions"}'
-    #   run: |
-    #     cd test
-    #     go mod tidy
-    #     go test -v -timeout 30m
+    - name: Run Terratest
+      env:
+        TF_VAR_name_prefix: "ci-test"
+        TF_VAR_environment_type: "Development"
+        TF_VAR_tags: '{"Environment":"ci","Project":"terraform-module","ManagedBy":"github-actions"}'
+      run: |
+        cd test
+        go mod tidy
+        go test -v -timeout 30m
