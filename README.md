@@ -115,7 +115,7 @@ This eliminates the need to manage different subnet IDs variable values for each
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 6.6.0 |
 
 ## Modules
 
@@ -136,9 +136,10 @@ This eliminates the need to manage different subnet IDs variable values for each
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_name_prefix"></a> [name\_prefix](#input\_name\_prefix) | Organization unique prefix to use for resource names. Recommend including environment and region. e.g. 'prod-usw2' | `string` | n/a | yes |
-| <a name="input_alarm_sns_topic_arn"></a> [alarm\_sns\_topic\_arn](#input\_alarm\_sns\_topic\_arn) | ARN of existing SNS topic to use for alarm notifications. If not provided, a new topic will be created. | `string` | `""` | no |
+| <a name="input_alarm_sns_topic_arn"></a> [alarm\_sns\_topic\_arn](#input\_alarm\_sns\_topic\_arn) | ARN of existing SNS topic to use for alarm notifications. Only used when create\_alarm\_sns\_topic is false. | `string` | `""` | no |
 | <a name="input_alarms_enabled"></a> [alarms\_enabled](#input\_alarms\_enabled) | Enable CloudWatch alarms for monitoring autoscaling group health | `bool` | `false` | no |
 | <a name="input_cost_estimation_enabled"></a> [cost\_estimation\_enabled](#input\_cost\_estimation\_enabled) | Set to false to disable estimation of monthly costs for provisioned resources | `bool` | `true` | no |
+| <a name="input_create_alarm_sns_topic"></a> [create\_alarm\_sns\_topic](#input\_create\_alarm\_sns\_topic) | Set to true to create an SNS topic for alarm notifications. Set to false to use an existing topic specified in alarm\_sns\_topic\_arn. | `bool` | `true` | no |
 | <a name="input_create_kms_key"></a> [create\_kms\_key](#input\_create\_kms\_key) | Set to true to create a customer-managed KMS key for encryption. Set to false to use an existing key specified in kms\_key\_id. | `bool` | `true` | no |
 | <a name="input_data_tags"></a> [data\_tags](#input\_data\_tags) | Tags/labels to apply to all resources with data-at-rest | `map(string)` | `{}` | no |
 | <a name="input_enabled"></a> [enabled](#input\_enabled) | Set to false to prevent the module from creating any resources | `bool` | `true` | no |
@@ -153,6 +154,8 @@ This eliminates the need to manage different subnet IDs variable values for each
 
 | Name | Description |
 |------|-------------|
+| <a name="output_alarm_sns_topic_arn"></a> [alarm\_sns\_topic\_arn](#output\_alarm\_sns\_topic\_arn) | ARN of the SNS topic used for alarm notifications |
+| <a name="output_alarm_sns_topic_name"></a> [alarm\_sns\_topic\_name](#output\_alarm\_sns\_topic\_name) | Name of the SNS topic used for alarm notifications |
 | <a name="output_cost_breakdown"></a> [cost\_breakdown](#output\_cost\_breakdown) | Detailed breakdown of monthly costs by service |
 | <a name="output_kms_alias_name"></a> [kms\_alias\_name](#output\_kms\_alias\_name) | Name of the KMS key alias |
 | <a name="output_kms_key_arn"></a> [kms\_key\_arn](#output\_kms\_key\_arn) | ARN of the KMS key used for encryption |

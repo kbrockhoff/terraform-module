@@ -171,8 +171,12 @@ func TestModuleExample(t *testing.T) {
     planOutput := terraform.Plan(t, terraformOptions)
     
     // Validate results
-    assert.NotEmpty(t, planOutput)
-    assert.Contains(t, planOutput, "Changes to Outputs")
+	assert.NotEmpty(t, planOutput)
+	// Verify invidivual resources
+	assert.Contains(t, planOutput, "module.main.aws_kms_key.main[0]")
+	assert.Contains(t, planOutput, "will be created")
+	// Verify expected resource count
+	assert.Contains(t, planOutput, "2 to add, 0 to change, 0 to destroy")
 }
 ```
 
@@ -321,9 +325,7 @@ env:
 
 ### Test Execution
 ```bash
-cd test
-go mod tidy
-go test -v -timeout 30m -parallel 4
+make test
 ```
 
 ### Cost Management
