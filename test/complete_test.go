@@ -32,9 +32,19 @@ func TestTerraformCompleteExample(t *testing.T) {
 	terraform.Init(t, terraformOptions)
 	planOutput := terraform.Plan(t, terraformOptions)
 
-	// Verify the plan completed without errors and shows expected output changes
+	// Verify the plan completed without errors and shows expected resource creation
 	assert.NotEmpty(t, planOutput)
-	assert.Contains(t, planOutput, "Terraform will perform the following actions:")
+	
+	// Verify core KMS resources are planned for creation
+	assert.Contains(t, planOutput, "module.main.aws_kms_key.main[0]")
+	assert.Contains(t, planOutput, "module.main.aws_kms_alias.main[0]")
+	assert.Contains(t, planOutput, "will be created")
+	
+	// Verify SNS topic is NOT created when alarms_enabled=false (default)
+	assert.NotContains(t, planOutput, "module.main.aws_sns_topic.alarms")
+	
+	// Verify expected resource count (2 resources: KMS key + alias)
+	assert.Contains(t, planOutput, "2 to add, 0 to change, 0 to destroy")
 
 }
 
