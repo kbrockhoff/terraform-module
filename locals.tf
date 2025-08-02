@@ -67,7 +67,7 @@ locals {
   reverse_dns_prefix = data.aws_partition.current.reverse_dns_prefix
 
   common_tags = merge(var.tags, {
-    ModuleName    = "terraform-replace-me"
+    ModuleName    = "kbrockhoff/replace-me/provider"
     ModuleVersion = local.module_version
     ModuleEnvType = var.environment_type
   })
@@ -81,9 +81,9 @@ locals {
   ) : ""
 
   # SNS topic logic - use provided topic ARN or create new one
-  create_sns_topic = var.enabled && local.effective_config.alarms_enabled && var.alarm_sns_topic_arn == ""
+  create_sns_topic = var.enabled && local.effective_config.alarms_enabled && var.create_alarm_sns_topic
   alarm_sns_topic_arn = var.enabled && local.effective_config.alarms_enabled ? (
-    var.alarm_sns_topic_arn != "" ? var.alarm_sns_topic_arn : aws_sns_topic.alarms[0].arn
+    var.create_alarm_sns_topic ? aws_sns_topic.alarms[0].arn : var.alarm_sns_topic_arn
   ) : ""
 
 }
