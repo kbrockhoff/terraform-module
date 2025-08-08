@@ -117,8 +117,8 @@ variable "name" {
   type        = string
   
   validation {
-    condition     = can(regex("^[a-z][a-z0-9-]{1,15}$", var.name))
-    error_message = "Name must be 2-16 characters, lowercase, start with letter."
+    condition     = can(regex("^[a-z][a-z0-9-]{0,22}[a-z0-9]$", var.name))
+    error_message = "Name must be 2-24 characters, lowercase, start with letter."
   }
 }
 

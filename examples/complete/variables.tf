@@ -13,8 +13,8 @@ variable "name_prefix" {
   type        = string
 
   validation {
-    condition     = can(regex("^[a-z][a-z0-9-]{1,15}$", var.name_prefix))
-    error_message = "The name_prefix value must start with a lowercase letter, followed by 1 to 15 alphanumeric or hyphen characters, for a total length of 2 to 16 characters."
+    condition     = can(regex("^[a-z][a-z0-9-]{0,22}[a-z0-9]$", var.name_prefix))
+    error_message = "The name_prefix value must start with a lowercase letter, followed by 0 to 22 alphanumeric or hyphen characters, ending with alphanumeric, for a total length of 2 to 24 characters."
   }
 }
 
