@@ -1,4 +1,4 @@
-# Terraform AWS S3 Backend Module Makefile
+# Terraform Brockhoff Module Makefile
 # Optimized for AI agents to reduce LLM calls and token usage
 
 .PHONY: help validate test clean format docs all status pre-commit lint check plan-examples destroy-examples
