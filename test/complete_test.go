@@ -40,11 +40,11 @@ func TestTerraformCompleteExample(t *testing.T) {
 	assert.Contains(t, planOutput, "module.main.aws_kms_alias.main[0]")
 	assert.Contains(t, planOutput, "will be created")
 	
-	// Verify SNS topic is NOT created when alarms_enabled=false (default)
-	assert.NotContains(t, planOutput, "module.main.aws_sns_topic.alarms")
+	// Verify SNS topic IS created when alarms_config.enabled=true (set in complete example)
+	assert.Contains(t, planOutput, "module.main.aws_sns_topic.alarms[0]")
 	
-	// Verify expected resource count (2 resources: KMS key + alias)
-	assert.Contains(t, planOutput, "2 to add, 0 to change, 0 to destroy")
+	// Verify expected resource count (3 resources: KMS key + alias + SNS topic)
+	assert.Contains(t, planOutput, "3 to add, 0 to change, 0 to destroy")
 
 }
 

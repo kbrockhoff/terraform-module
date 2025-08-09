@@ -30,8 +30,10 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_region"></a> [region](#input\_region) | AWS region | `string` | n/a | yes |
-| <a name="input_create_kms_key"></a> [create\_kms\_key](#input\_create\_kms\_key) | Whether to create a KMS key for encryption | `bool` | `false` | no |
+| <a name="input_cloudwatch_alarm_count"></a> [cloudwatch\_alarm\_count](#input\_cloudwatch\_alarm\_count) | Number of CloudWatch alarms to include in cost estimation | `number` | `0` | no |
+| <a name="input_cloudwatch_metric_count"></a> [cloudwatch\_metric\_count](#input\_cloudwatch\_metric\_count) | Number of CloudWatch custom metrics to include in cost estimation | `number` | `0` | no |
 | <a name="input_enabled"></a> [enabled](#input\_enabled) | Set to false to prevent the module from creating any resources | `bool` | `true` | no |
+| <a name="input_kms_key_count"></a> [kms\_key\_count](#input\_kms\_key\_count) | Number of KMS keys to include in cost estimation | `number` | `0` | no |
 
 ## Outputs
 
