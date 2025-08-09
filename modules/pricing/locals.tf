@@ -93,6 +93,7 @@ locals {
   # Get the correct location name for pricing API queries
   pricing_location = lookup(local.region_location_map, var.region, "US East (N. Virginia)")
 
+  # KMS pricing calculations
   kms_on_demand = local.pricing_enabled && can(jsondecode(data.aws_pricing_product.kms[0].result).terms.OnDemand) ? (
     values(jsondecode(data.aws_pricing_product.kms[0].result).terms.OnDemand)
   ) : []
@@ -100,8 +101,38 @@ locals {
     values(local.kms_on_demand[0].priceDimensions)[0].pricePerUnit.USD
   ) : "1.00"
 
+  # CloudWatch Metrics pricing calculations
+  cloudwatch_metrics_on_demand = local.pricing_enabled && can(jsondecode(data.aws_pricing_product.cloudwatch_metrics[0].result).terms.OnDemand) ? (
+    values(jsondecode(data.aws_pricing_product.cloudwatch_metrics[0].result).terms.OnDemand)
+  ) : []
+  cloudwatch_metrics_monthly = length(local.cloudwatch_metrics_on_demand) > 0 ? (
+    values(local.cloudwatch_metrics_on_demand[0].priceDimensions)[0].pricePerUnit.USD
+  ) : "0.30"
+
+  # CloudWatch Alarms pricing calculations
+  cloudwatch_alarms_on_demand = local.pricing_enabled && can(jsondecode(data.aws_pricing_product.cloudwatch_alarms[0].result).terms.OnDemand) ? (
+    values(jsondecode(data.aws_pricing_product.cloudwatch_alarms[0].result).terms.OnDemand)
+  ) : []
+  cloudwatch_alarms_monthly = length(local.cloudwatch_alarms_on_demand) > 0 ? (
+    values(local.cloudwatch_alarms_on_demand[0].priceDimensions)[0].pricePerUnit.USD
+  ) : "0.10"
+
+  # SNS Requests pricing calculations
+  sns_requests_on_demand = local.pricing_enabled && can(jsondecode(data.aws_pricing_product.sns_requests[0].result).terms.OnDemand) ? (
+    values(jsondecode(data.aws_pricing_product.sns_requests[0].result).terms.OnDemand)
+  ) : []
+  sns_requests_per_unit = length(local.sns_requests_on_demand) > 0 ? (
+    values(local.sns_requests_on_demand[0].priceDimensions)[0].pricePerUnit.USD
+  ) : "0.0000005" # Default: $0.50 per million requests
+
+  # Calculate SNS requests based on CloudWatch alarms (720 = 24 hours * 30 days, assuming 1 alarm per hour)
+  sns_requests_per_month = var.cloudwatch_alarm_count * 720
+
   costs = {
-    kms_keys = var.create_kms_key ? tonumber(local.kms_monthly) : 0
+    kms_keys           = var.kms_key_count * tonumber(local.kms_monthly)
+    cloudwatch_metrics = var.cloudwatch_metric_count * tonumber(local.cloudwatch_metrics_monthly)
+    cloudwatch_alarms  = var.cloudwatch_alarm_count * tonumber(local.cloudwatch_alarms_monthly)
+    sns_requests       = local.sns_requests_per_month * tonumber(local.sns_requests_per_unit)
   }
-  total_monthly_cost = local.costs.kms_keys
+  total_monthly_cost = local.costs.kms_keys + local.costs.cloudwatch_metrics + local.costs.cloudwatch_alarms + local.costs.sns_requests
 }

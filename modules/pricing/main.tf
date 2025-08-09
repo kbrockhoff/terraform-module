@@ -66,3 +66,24 @@ data "aws_pricing_product" "cloudwatch_alarms" {
     value = local.pricing_location
   }
 }
+
+# ----
+# SNS Pricing Data
+# ----
+
+# SNS topics pricing
+data "aws_pricing_product" "sns_requests" {
+  count = local.pricing_enabled ? 1 : 0
+
+  service_code = "AmazonSNS"
+
+  filters {
+    field = "productFamily"
+    value = "API Request"
+  }
+
+  filters {
+    field = "location"
+    value = local.pricing_location
+  }
+}
