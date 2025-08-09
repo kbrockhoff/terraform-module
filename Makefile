@@ -227,6 +227,7 @@ verify-tests: ## Verify test structure and names
 
 ##@ Development
 update-branch: ## Update current branch with latest main (merge if exists on origin, rebase if local only)
+	@if [ -n "$$(git status --porcelain)" ]; then echo "$(RED)✗ Working directory is not clean. Please commit or stash your changes.$(RESET)"; exit 1; fi
 	@echo "$(CYAN)Updating branch with latest main...$(RESET)"
 	@git fetch origin
 	@CURRENT_BRANCH=$$(git branch --show-current); \
