@@ -31,7 +31,7 @@ This project adheres to a code of conduct. By participating, you are expected to
 ### Prerequisites
 
 - [Terraform](https://www.terraform.io/downloads.html) >= 1.5
-- [Go](https://golang.org/dl/) >= 1.19 (for testing)
+- [Go](https://golang.org/dl/) >= 1.23 (for testing)
 - AWS CLI configured with appropriate credentials
 - Git
 
