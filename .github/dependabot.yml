@@ -1,0 +1,12 @@
+version: 2
+updates:
+  - package-ecosystem: "terraform"
+    directory: "/" # Location of Terraform files
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "gomod"
+    directory: "/test/" # Location of go.mod file
+    schedule:
+      interval: "weekly"
+
