@@ -1,4 +1,4 @@
-# Brockhoff Cloud Terraform Module
+# Terraform Module Template
 
 > **📋 Template Setup Instructions**
 >
@@ -34,17 +34,21 @@
 >    - Update repository URLs and documentation
 >    - Customize examples and tests for your specific resources
 
-Terraform module which creates XXX resources on CLOUD. It takes an opinionated 
-approach to resource placement, naming, tagging, and well-architected best 
-practices.
+This is a standardized multi-cloud Terraform module template that follows Brockhoff Cloud standards and integrates with the
+`terraform-external-context` module for consistent naming and tagging across AWS, Azure, and GCP.
 
 ## Features
 
 - Feature 1
 - Feature 2
 - Feature 3
-- Monthly cost estimate submodule
-- Deployment pipeline least privilege IAM role submodule
+- **Multi-Cloud Support**: Works across AWS, Azure, and GCP with consistent interfaces
+- **Context Integration**: Leverages terraform-external-context for standardized naming and tagging
+- **Environment-Aware**: Automatically adjusts configuration based on environment type
+- **Security-First**: Built-in encryption, monitoring, and compliance features
+- **Cost-Optimized**: Environment-specific instance sizing and cost optimization recommendations
+- **High Availability**: Optional HA configuration for production workloads
+- **AI-Friendly**: Includes metadata and structured outputs for AI agent consumption
 
 ## Usage
 
