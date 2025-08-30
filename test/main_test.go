@@ -8,6 +8,8 @@ import (
 	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
+const RandomIDLength = 10
+
 // TestMain sets up and tears down any shared test resources
 func TestMain(m *testing.M) {
 	// Run the tests

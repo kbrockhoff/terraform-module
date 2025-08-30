@@ -3,7 +3,7 @@
 # ----
 
 module "pricing" {
-  source = "./modules/pricing"
+  source = "./modules/cost-estimation"
 
   providers = {
     aws = aws.pricing
