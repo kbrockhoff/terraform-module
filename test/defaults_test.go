@@ -7,8 +7,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const RandomIDLength = 10
-
 func TestTerraformDefaultsExample(t *testing.T) {
 	t.Parallel()
 	expectedName := generateTestNamePrefix("def")

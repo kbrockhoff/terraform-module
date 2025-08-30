@@ -52,7 +52,7 @@ data "aws_iam_policy_document" "kms_key_policy" {
     effect = "Allow"
     principals {
       type        = "Service"
-      identifiers = ["sns.${local.region}.${local.dns_suffix}"]
+      identifiers = ["sns.${local.dns_suffix}"]
     }
     actions = [
       "kms:Decrypt",
