@@ -159,7 +159,7 @@ This eliminates the need to manage different subnet IDs variable values for each
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_pricing"></a> [pricing](#module\_pricing) | ./modules/pricing | n/a |
+| <a name="module_pricing"></a> [pricing](#module\_pricing) | ./modules/cost-estimation | n/a |
 
 ## Resources
 

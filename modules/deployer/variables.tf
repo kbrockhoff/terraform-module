@@ -14,20 +14,9 @@ variable "name_prefix" {
   }
 }
 
-variable "github_org" {
-  description = "GitHub organization name"
+variable "iam_role_arn" {
+  description = "ARN of the IAM role to attach the policy to"
   type        = string
-}
-
-variable "github_repo" {
-  description = "GitHub repository name"
-  type        = string
-}
-
-variable "environment" {
-  description = "Environment name for OIDC trust (e.g., 'development', 'staging', 'production')"
-  type        = string
-  default     = "*"
 }
 
 variable "tags" {
@@ -42,6 +31,12 @@ variable "partition" {
   default     = "aws"
 }
 
+variable "dns_suffix" {
+  description = "AWS services DNS suffix"
+  type        = string
+  default     = "amazonaws.com"
+}
+
 variable "region" {
   description = "AWS region"
   type        = string
@@ -49,15 +44,5 @@ variable "region" {
 
 variable "account_id" {
   description = "AWS account ID"
-  type        = string
-}
-
-variable "s3_backend_bucket" {
-  description = "S3 bucket name for Terraform state backend"
-  type        = string
-}
-
-variable "s3_backend_lock_table" {
-  description = "DynamoDB table name for Terraform state locking"
   type        = string
 }
