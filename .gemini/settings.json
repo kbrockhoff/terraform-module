@@ -39,8 +39,38 @@
       "type": "stdio"
     },
     "pieces": {
-      "url": "http://localhost:39300/model_context_protocol/2024-11-05/sse",
-      "type": "remote"
+      "command": "uvx",
+      "args": [
+        "mcp-proxy",
+        "--transport",
+        "sse",
+        "http://localhost:39300/model_context_protocol/2024-11-05/sse"
+      ],
+      "type": "stdio"
+    },
+    "fetch": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-fetch"
+      ],
+      "type": "stdio"
+    },
+    "aws-documentation": {
+      "command": "uvx",
+      "args": [
+        "awslabs.aws-documentation-mcp-server@latest"
+      ],
+      "type": "stdio"
+    },
+    "aws-knowledge": {
+      "command": "uvx",
+      "args": [
+        "mcp-proxy",
+        "--transport",
+        "streamablehttp",
+        "https://knowledge-mcp.global.api.aws"
+      ],
+      "type": "stdio"
     }
   }
 }

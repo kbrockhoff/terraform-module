@@ -7,5 +7,14 @@
       "Bash(terraform:*)"
     ],
     "deny": []
-  }
+  },
+  "enabledMcpjsonServers": [
+    "sequential-thinking",
+    "filesystem",
+    "pieces",
+    "context7",
+    "fetch",
+    "aws-documentation",
+    "aws-knowledge"
+  ]
 }
