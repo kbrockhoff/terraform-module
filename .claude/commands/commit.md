@@ -5,8 +5,9 @@ You are tasked with creating git commits for the changes made during this sessio
 ## Process:
 
 1. **Validate the workspace:**
+   - Run `cd $(git rev-parse --show-toplevel)`
    - Run `make pre-commit`
-   - Fail if any errors occur
+   - If pre-commit fails, launch terraform-validation-fixer agent and proceed no further
 
 2. **Think about what changed:**
    - Review the conversation history and understand what was accomplished

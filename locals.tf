@@ -60,8 +60,8 @@ locals {
   )
 
   # AWS account, partition, and region info
-  account_id         = data.aws_caller_identity.current.account_id
-  partition          = data.aws_partition.current.partition
+  account_id       = data.aws_caller_identity.current.account_id
+  partition        = data.aws_partition.current.partition
   region             = data.aws_region.current.region
   dns_suffix         = data.aws_partition.current.dns_suffix
   reverse_dns_prefix = data.aws_partition.current.reverse_dns_prefix
