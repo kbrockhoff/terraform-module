@@ -15,7 +15,10 @@ jobs:
   terraform-checks:
     name: Terraform Format and Validate
     runs-on: ubuntu-latest
-    
+    strategy:
+      matrix:
+        terraform_version: ["1.11.4", "latest"]
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -23,7 +26,7 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
       with:
-        terraform_version: "1.12.2"
+        terraform_version: ${{ matrix.terraform_version }}
 
     - name: Terraform Format Check
       run: terraform fmt -check -recursive
@@ -109,7 +112,10 @@ jobs:
     runs-on: ubuntu-latest
     environment: development
     needs: terraform-checks
-    
+    strategy:
+      matrix:
+        terraform_version: ["1.11.4", "latest"]
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -128,12 +134,12 @@ jobs:
         audience: sts.amazonaws.com
         retry-max-attempts: 3
         output-credentials: true
-        
+
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
       with:
-        terraform_version: "1.12.2"
+        terraform_version: ${{ matrix.terraform_version }}
 
     # Uncomment the following lines to run Terratest
     - name: Run Terratest
