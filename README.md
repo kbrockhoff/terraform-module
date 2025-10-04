@@ -74,8 +74,8 @@ module "example" {
 
 ## Environment Type Configuration
 
-The `environment_type` variable provides a standardized way to configure resource defaults based on environment 
-characteristics. This follows cloud well-architected framework recommendations for different deployment stages. 
+The `environment_type` variable provides a standardized way to configure resource defaults based on environment
+characteristics. This follows cloud well-architected framework recommendations for different deployment stages.
 Resiliency settings comply with the recovery point objective (RPO) and recovery time objective (RTO) values in
 the table below. Cost optimization settings focus on shutting down resources during off-hours.
 
@@ -94,6 +94,7 @@ the table below. Cost optimization settings focus on shutting down resources dur
 ### Usage Examples
 
 #### Development Environment
+
 ```hcl
 module "dev_resources" {
   source = "path/to/terraform-module"
@@ -109,6 +110,7 @@ module "dev_resources" {
 ```
 
 #### Production Environment
+
 ```hcl
 module "prod_resources" {
   source = "path/to/terraform-module"
@@ -125,6 +127,7 @@ module "prod_resources" {
 ```
 
 #### Custom Configuration (None)
+
 ```hcl
 module "custom_resources" {
   source = "path/to/terraform-module"
@@ -136,9 +139,10 @@ module "custom_resources" {
   # when environment_type is "None"
 }
 ```
+
 ## Network Tags Configuration
 
-Resources deployed to subnets use lookup by `NetworkTags` values to determine which subnets to deploy to. 
+Resources deployed to subnets use lookup by `NetworkTags` values to determine which subnets to deploy to.
 This eliminates the need to manage different subnet IDs variable values for each environment.
 
 <!-- BEGIN_TF_DOCS -->
@@ -195,7 +199,7 @@ This eliminates the need to manage different subnet IDs variable values for each
 | <a name="output_kms_key_arn"></a> [kms\_key\_arn](#output\_kms\_key\_arn) | ARN of the KMS key used for encryption |
 | <a name="output_kms_key_id"></a> [kms\_key\_id](#output\_kms\_key\_id) | ID of the KMS key used for encryption |
 | <a name="output_monthly_cost_estimate"></a> [monthly\_cost\_estimate](#output\_monthly\_cost\_estimate) | Estimated monthly cost in USD for module resources |
-<!-- END_TF_DOCS -->    
+<!-- END_TF_DOCS -->
 
 ## License
 
