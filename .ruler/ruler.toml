@@ -31,12 +31,24 @@ command = "npx"
 args = ["-y", "@modelcontextprotocol/server-filesystem", "."]
 
 [mcp_servers.pieces]
-type = "sse"
-url = "http://localhost:39300/model_context_protocol/2024-11-05/sse"
+command = "uvx"
+args = ["mcp-proxy", "--transport", "sse", "http://localhost:39300/model_context_protocol/2024-11-05/sse"]
 
 [mcp_servers.context7]
 command = "npx"
 args = ["-y", "@upstash/context7-mcp"]
+
+[mcp_servers.fetch]
+command = "uvx"
+args = ["mcp-server-fetch"]
+
+[mcp_servers.aws-documentation]
+command = "uvx"
+args = ["awslabs.aws-documentation-mcp-server@latest"]
+
+[mcp_servers.aws-knowledge]
+command = "uvx"
+args = ["mcp-proxy", "--transport", "streamablehttp", "https://knowledge-mcp.global.api.aws"]
 
 # --- Agent-Specific Configurations ---
 [agents.copilot]
