@@ -68,7 +68,7 @@ jobs:
 
     # - name: Run TFLint
     #   run: tflint -f compact
-      
+
     # Root module validation skipped - requires provider configuration
     # Root module is designed to be used as a module with providers passed in
 
@@ -80,7 +80,7 @@ jobs:
           terraform init -backend=false
           cd - > /dev/null
         done
-        
+
     - name: Terraform Validate (Modules)
       run: |
         for module in modules/*/; do
@@ -97,7 +97,7 @@ jobs:
           terraform init -backend=false
           cd - > /dev/null
         done
-        
+
     - name: Terraform Validate (Examples)
       run: |
         for example in examples/*/; do
@@ -123,7 +123,7 @@ jobs:
     - name: Setup Go
       uses: actions/setup-go@v7
       with:
-        go-version: '1.24'
+        go-version: '1.26'
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v6
