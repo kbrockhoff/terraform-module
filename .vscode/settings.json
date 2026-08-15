@@ -1,10 +1,10 @@
 {
   "github.copilot.chat.codeGeneration.instructions": [
     {
-      "filePath": ".agents/instructions/global.md"
+      "filePath": ".agents/agents.md"
     }
   ],
-  "google.gemini.mcp.configurationFile": "${workspaceFolder}/.agents/mcp/mcp-servers.json",
-  "google.gemini.systemInstructionFile": "${workspaceFolder}/.agents/instructions/global.md",
+  "google.gemini.mcp.configurationFile": "${workspaceFolder}/.agents/mcp.json",
+  "google.gemini.systemInstructionFile": "${workspaceFolder}/.agents/agents.md",
   "opencode.rules.path": "./.agents/instructions/sub-agents/opencode-rules.md"
 }

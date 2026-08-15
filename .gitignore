@@ -44,7 +44,6 @@ terraform.rc
 *.sublime-project
 *.sublime-workspace
 
-# Ruler
-**/*.bak
-claude_desktop_config.json
+# AI agents
+.claude/settings.local.json
 
