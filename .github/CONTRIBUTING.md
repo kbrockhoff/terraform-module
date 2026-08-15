@@ -34,8 +34,8 @@ all interactions.
 
 ### Prerequisites
 
-- [Terraform](https://www.terraform.io/downloads.html) >= 1.5
-- [Go](https://golang.org/dl/) >= 1.23 (for testing)
+- [Terraform](https://www.terraform.io/downloads.html) >= 1.11
+- [Go](https://golang.org/dl/) >= 1.26 (for testing)
 - AWS CLI configured with appropriate credentials
 - Git
 
