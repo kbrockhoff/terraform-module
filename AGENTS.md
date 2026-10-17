@@ -72,6 +72,14 @@ module "monolith" { create_vpc = true; create_db = true; create_lb = true; ... }
 * Default to encryption with customer-managed KMS.
 * Create log groups explicitly.
 
+### CI/CD Deployer Permissions
+
+* `modules/deployer` creates least privilege IAM managed policies for CI/CD to plan, apply and destroy this module.
+* Attach them to the role from `terraform-aws-cicdrole` via `iam_role_name = module.<cicdrole>.role_name`; leave it empty to only create policies.
+* The role, OIDC trust and Terraform state backend access belong to cicdrole — never add them to the deployer.
+* Keep the deployer in sync whenever resources are added or changed in this module.
+* Inputs: `enabled`, `name_prefix`, `iam_role_name`, `tags`, `partition`, `region`, `account_id`. Outputs: `policy_arns`, `policy_names` (maps keyed by policy purpose).
+
 ### Avoid
 
 * **God Modules:** Don’t build modules that do everything.

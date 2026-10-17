@@ -1,9 +1,9 @@
-output "policy_arn" {
-  description = "ARN of the IAM policy created for deployment operations"
-  value       = var.enabled ? aws_iam_policy.basic[0].arn : null
+output "policy_arns" {
+  description = "Map of deployer IAM policy ARNs keyed by policy purpose"
+  value       = { for k, v in aws_iam_policy.this : k => v.arn }
 }
 
-output "policy_name" {
-  description = "Name of the IAM policy created for deployment operations"
-  value       = var.enabled ? aws_iam_policy.basic[0].name : null
+output "policy_names" {
+  description = "Map of deployer IAM policy names keyed by policy purpose"
+  value       = { for k, v in aws_iam_policy.this : k => v.name }
 }
