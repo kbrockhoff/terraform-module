@@ -132,7 +132,7 @@ Before submitting changes:
 
 ### Terraform Code Style
 
-Follow the guidelines in [`.ruler/terraform-style.md`](.ruler/terraform-style.md):
+Follow the Terraform Style Guide in [`AGENTS.md`](../AGENTS.md#terraform-style-guide):
 
 - Use `terraform fmt` for consistent formatting
 - Use snake_case for all identifiers
