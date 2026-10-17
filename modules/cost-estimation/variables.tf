@@ -5,7 +5,7 @@ variable "enabled" {
 }
 
 variable "region" {
-  description = "AWS region"
+  description = "AWS region where the parent module deploys its resources, e.g. us-west-2"
   type        = string
 }
 
