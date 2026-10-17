@@ -34,7 +34,7 @@ body:
       render: hcl
       placeholder: |
         # Example of how the feature might work
-        module "vpc" {
+        module "this" {
           source = "..."
           
           # new feature configuration
@@ -66,18 +66,12 @@ body:
     id: aws-services
     attributes:
       label: AWS Services Involved
-      description: Which AWS services would this feature involve?
+      description: Which AWS services would this feature involve? Replace these with the services the module provisions.
       options:
-        - label: VPC
-        - label: Subnets
-        - label: Route Tables
-        - label: Internet Gateway
-        - label: NAT Gateway
-        - label: VPC Endpoints
-        - label: Security Groups
-        - label: NACLs
-        - label: VPC Peering
-        - label: Transit Gateway
+        - label: KMS
+        - label: CloudWatch
+        - label: SNS
+        - label: IAM
         - label: Other (please specify in additional context)
         
   - type: dropdown

@@ -1,63 +1,84 @@
-# IAM Policy Document for S3 Backend and Basic Terraform Operations
-data "aws_iam_policy_document" "basic" {
+# ----
+# Least privilege permissions to provision and deprovision the parent module's resources.
+# Terraform state backend access is granted by terraform-aws-cicdrole, not here.
+# ----
+
+data "aws_iam_policy_document" "main" {
   count = var.enabled ? 1 : 0
 
-  # KMS read collections
+  # Caller identity lookups used by the parent module's data sources
   statement {
-    sid    = "KmsRead"
+    sid    = "CallerIdentity"
     effect = "Allow"
     actions = [
+      "sts:GetCallerIdentity",
+    ]
+    resources = ["*"]
+  }
+
+  # Pricing API access (required for cost estimation)
+  statement {
+    sid    = "PricingRead"
+    effect = "Allow"
+    actions = [
+      "freetier:GetAccountPlanState",
+      "pricing:GetAttributeValues",
+      "pricing:GetProducts",
+    ]
+    resources = ["*"]
+  }
+
+  # KMS actions which do not support resource-level permissions
+  statement {
+    sid    = "KmsGlobal"
+    effect = "Allow"
+    actions = [
+      "kms:CreateKey",
       "kms:ListAliases",
       "kms:ListKeys",
     ]
-    resources = [
-      "arn:${var.partition}:kms:${var.region}:${var.account_id}:key/*",
-      "arn:${var.partition}:kms:${var.region}:${var.account_id}:alias/*",
-    ]
+    resources = ["*"]
   }
 
-  # KMS provisioning
   statement {
-    sid    = "KmsProvisioning"
+    sid    = "KmsKeyManagement"
     effect = "Allow"
     actions = [
-      "kms:EnableKeyRotation",
+      "kms:CancelKeyDeletion",
+      "kms:CreateGrant",
       "kms:DescribeKey",
-      "kms:ListResourceTags",
-      "kms:ScheduleKeyDeletion",
-      "kms:Decrypt",
-      "kms:CreateKey",
-      "kms:GetKeyRotationStatus",
-      "kms:Encrypt",
-      "kms:GenerateDataKey",
+      "kms:DisableKey",
+      "kms:DisableKeyRotation",
+      "kms:EnableKey",
+      "kms:EnableKeyRotation",
       "kms:GetKeyPolicy",
+      "kms:GetKeyRotationStatus",
+      "kms:ListGrants",
+      "kms:ListResourceTags",
       "kms:PutKeyPolicy",
+      "kms:RetireGrant",
+      "kms:RevokeGrant",
+      "kms:ScheduleKeyDeletion",
       "kms:TagResource",
       "kms:UntagResource",
-      "kms:DisableKey",
-      "kms:EnableKey",
-      "kms:CancelKeyDeletion",
-      "kms:DisableKeyRotation",
-      "kms:ListGrants",
-      "kms:CreateGrant",
-      "kms:RevokeGrant",
-      "kms:RetireGrant",
     ]
     resources = [
       "arn:${var.partition}:kms:${var.region}:${var.account_id}:key/*",
     ]
   }
 
-  # KMS read collections
+  # Alias management requires permission on both the alias and the target key
   statement {
-    sid    = "KmsAlias"
+    sid    = "KmsAliasManagement"
     effect = "Allow"
     actions = [
       "kms:CreateAlias",
       "kms:DeleteAlias",
+      "kms:UpdateAlias",
     ]
     resources = [
       "arn:${var.partition}:kms:${var.region}:${var.account_id}:alias/${var.name_prefix}-*",
+      "arn:${var.partition}:kms:${var.region}:${var.account_id}:key/*",
     ]
   }
 
@@ -65,15 +86,15 @@ data "aws_iam_policy_document" "basic" {
     sid    = "AlarmManagement"
     effect = "Allow"
     actions = [
-      "cloudwatch:DescribeAlarms",
-      "cloudwatch:PutMetricAlarm",
       "cloudwatch:DeleteAlarms",
+      "cloudwatch:DescribeAlarms",
       "cloudwatch:ListTagsForResource",
+      "cloudwatch:PutMetricAlarm",
       "cloudwatch:TagResource",
       "cloudwatch:UntagResource",
     ]
     resources = [
-      "arn:${var.partition}:cloudwatch:${var.region}:${var.account_id}:alarm:${var.name_prefix}*"
+      "arn:${var.partition}:cloudwatch:${var.region}:${var.account_id}:alarm:${var.name_prefix}-*",
     ]
   }
 
@@ -84,55 +105,33 @@ data "aws_iam_policy_document" "basic" {
       "sns:CreateTopic",
       "sns:DeleteTopic",
       "sns:GetTopicAttributes",
-      "sns:SetTopicAttributes",
       "sns:ListTagsForResource",
+      "sns:SetTopicAttributes",
       "sns:TagResource",
       "sns:UntagResource",
     ]
     resources = [
-      "arn:${var.partition}:sns:${var.region}:${var.account_id}:${var.name_prefix}*"
+      "arn:${var.partition}:sns:${var.region}:${var.account_id}:${var.name_prefix}-*",
     ]
   }
-
-  # Basic AWS API access for resource management
-  statement {
-    sid    = "BasicAWSAccess"
-    effect = "Allow"
-    actions = [
-      "sts:GetCallerIdentity",
-    ]
-    resources = ["*"]
-  }
-
-  # Pricing API access (required for cost estimation)
-  statement {
-    sid    = "PricingAPIAccess"
-    effect = "Allow"
-    actions = [
-      "freetier:GetAccountPlanState",
-      "pricing:GetAttributeValues",
-      "pricing:GetProducts",
-    ]
-    resources = ["*"]
-  }
-
 }
 
-# IAM Policy (standalone)
-resource "aws_iam_policy" "basic" {
-  count       = var.enabled ? 1 : 0
-  name        = "${var.name_prefix}-github-actions-basic"
-  description = "Basic permissions for GitHub Actions CI/CD operations"
-  policy      = data.aws_iam_policy_document.basic[0].json
+resource "aws_iam_policy" "this" {
+  for_each = local.policy_documents
+
+  name        = "${local.policy_name_prefix}-${each.key}"
+  description = "Least privilege permissions for CI/CD to deploy the ${local.module_short_name} module (${each.key})"
+  policy      = each.value
 
   tags = merge(var.tags, {
-    Name = "${var.name_prefix}-github-actions-basic"
+    Name = "${local.policy_name_prefix}-${each.key}"
   })
 }
 
-# IAM Policy Attachment
-resource "aws_iam_role_policy_attachment" "basic" {
-  count      = var.enabled ? 1 : 0
-  role       = split("/", var.iam_role_arn)[1]
-  policy_arn = aws_iam_policy.basic[0].arn
+# Optional attachment, e.g. to the role created by terraform-aws-cicdrole
+resource "aws_iam_role_policy_attachment" "this" {
+  for_each = local.attach_to_role ? aws_iam_policy.this : {}
+
+  role       = var.iam_role_name
+  policy_arn = each.value.arn
 }

@@ -1,9 +1,12 @@
 # ----
-# KMS Pricing Data
+# AWS Pricing API lookups
+#
+# aws_pricing_product fails the plan unless its filters match exactly one product, so each
+# lookup filters on regionCode plus attributes that are identical in every region. Validate
+# new filters against the Pricing API in every supported region before adding them.
 # ----
 
-# KMS pricing
-data "aws_pricing_product" "kms" {
+data "aws_pricing_product" "kms_keys" {
   count = local.pricing_enabled ? 1 : 0
 
   service_code = "AWSKMS"
@@ -14,16 +17,12 @@ data "aws_pricing_product" "kms" {
   }
 
   filters {
-    field = "usagetype"
-    value = "${var.region}-KMS-Keys"
+    field = "regionCode"
+    value = var.region
   }
 }
 
-# ----
-# CloudWatch Pricing Data
-# ----
-
-# CloudWatch standard metrics
+# Custom metrics (CW:MetricMonitorUsage), not Container Insights metric storage
 data "aws_pricing_product" "cloudwatch_metrics" {
   count = local.pricing_enabled ? 1 : 0
 
@@ -35,17 +34,17 @@ data "aws_pricing_product" "cloudwatch_metrics" {
   }
 
   filters {
-    field = "usagetype"
-    value = "${local.usagetype_region}-CW:MetricsUsage"
+    field = "group"
+    value = "Metric"
   }
 
   filters {
-    field = "location"
-    value = local.pricing_location
+    field = "regionCode"
+    value = var.region
   }
 }
 
-# CloudWatch alarms
+# Standard resolution metric alarms
 data "aws_pricing_product" "cloudwatch_alarms" {
   count = local.pricing_enabled ? 1 : 0
 
@@ -57,21 +56,21 @@ data "aws_pricing_product" "cloudwatch_alarms" {
   }
 
   filters {
-    field = "usagetype"
-    value = "CW:AlarmMonitorUsage"
+    field = "group"
+    value = "Alarm"
   }
 
   filters {
-    field = "location"
-    value = local.pricing_location
+    field = "alarmType"
+    value = "Standard"
+  }
+
+  filters {
+    field = "regionCode"
+    value = var.region
   }
 }
 
-# ----
-# SNS Pricing Data
-# ----
-
-# SNS topics pricing
 data "aws_pricing_product" "sns_requests" {
   count = local.pricing_enabled ? 1 : 0
 
@@ -83,7 +82,12 @@ data "aws_pricing_product" "sns_requests" {
   }
 
   filters {
-    field = "location"
-    value = local.pricing_location
+    field = "group"
+    value = "SNS-Requests-Tier1"
+  }
+
+  filters {
+    field = "regionCode"
+    value = var.region
   }
 }

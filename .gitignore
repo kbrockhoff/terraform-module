@@ -39,7 +39,7 @@ terraform.rc
 
 # IDEs
 .idea/
-.vscode/
+.vscode/*
 !.vscode/settings.json
 *.sublime-project
 *.sublime-workspace
@@ -47,3 +47,10 @@ terraform.rc
 # AI agents
 .claude/settings.local.json
 
+
+# Beads / Dolt files (added by bd init)
+.dolt/
+*.db
+.beads-credential-key
+.beads/proxieddb/
+*.gate.lock*
