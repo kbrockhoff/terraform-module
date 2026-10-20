@@ -64,10 +64,31 @@ all interactions.
 - **Tests**: Add or improve test coverage
 - **Performance**: Optimize existing functionality
 
+### Spec-Driven Development
+
+This repository uses spec-driven development via
+[IaC Spec Kit](https://github.com/IBM/iac-spec-kit). **New features must start with a
+specification** before any Terraform code is written. Specs, plans and task lists live in
+`specs/<feature>/`, and the project principles live in `.specify/memory/principles.md`.
+
+The workflow, using the `iac.*` agent commands:
+
+1. `/iac.specify`: write the infrastructure specification (`spec.md`)
+2. `/iac.clarify`: resolve underspecified areas (optional)
+3. `/iac.plan`: create the architecture plan (`plan.md`); `/iac.enrichplan` adds deeper research
+4. `/iac.tasks`: generate a dependency-ordered `tasks.md`
+5. `/iac.analyze`: check consistency across spec, plan and tasks (optional)
+6. `/iac.implement`: build the tasks; `/iac.converge` appends any remaining unbuilt work
+
+Include the spec artifacts in the same pull request as the implementation. Bug fixes and
+small changes that don't add functionality don't need a spec.
+
 ### Development Workflow
 
 1. **Understand the existing code**: Review the current implementation and understand how it works
-2. **Plan your changes**: For larger changes, consider opening an issue first to discuss the approach
+2. **Plan your changes**: For new features, create a specification first (see
+   [Spec-Driven Development](#spec-driven-development)). For other larger changes, consider
+   opening an issue first to discuss the approach
 3. **Write your code**: Follow the style guidelines and best practices
 4. **Test your changes**: Ensure all tests pass and add new tests if needed
 5. **Update documentation**: Update README, variable descriptions, and examples as needed
